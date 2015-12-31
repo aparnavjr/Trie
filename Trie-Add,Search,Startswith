@@ -1,0 +1,122 @@
+class TrieNode {
+    // Initialize your data structure here.
+    public bool isEnd;
+    public char ch;
+    public Dictionary<char,TrieNode> children;
+    public TrieNode() {
+        
+        isEnd = false;
+        children = new Dictionary<char,TrieNode>();
+        
+    }
+}
+
+public class Trie {
+    private TrieNode root;
+
+    public Trie() {
+        root = new TrieNode();
+    }
+
+    // Inserts a word into the trie.
+    public void Insert(String word) {
+        
+        TrieNode crawl = root;
+        int len = word.Length;
+        
+        
+        for(int i = 0; i < len ;i++)
+        {
+            
+            char ch = word[i];
+            Dictionary<char,TrieNode> children = crawl.children;
+            if(children.ContainsKey(ch))
+            {
+                crawl = children[ch];
+            }
+            
+            else
+            {
+                TrieNode temp = new TrieNode();
+                temp.ch = ch;
+                children.Add(ch,temp);
+                crawl = temp;
+            }
+           
+            
+        }
+        
+        crawl.isEnd = true;
+        
+    }
+
+    // Returns if the word is in the trie.
+    public bool Search(string word) {
+        
+        TrieNode crawl = root;
+        int len = word.Length;
+        
+        for(int i =0 ;i < len ; i++)
+        {
+            char ch = word[i];
+            Dictionary<char,TrieNode> children = crawl.children;
+            
+            if(!children.ContainsKey(ch))
+            {
+                return false;
+            }
+            
+            crawl = children[ch];
+           
+        }
+        
+        return (crawl.isEnd == true);
+        
+    }
+
+    // Returns if there is any word in the trie
+    // that starts with the given prefix.
+    public bool StartsWith(string word) {
+        
+        TrieNode crawl = root;
+        int len = word.Length;
+        int prev = 0;
+        string result = "";
+        
+        for(int i = 0 ; i < len; i++)
+        {
+            char ch = word[i];
+            Dictionary<char,TrieNode> children = crawl.children;
+            
+            if(children.ContainsKey(ch))
+            {
+                result+=ch;
+                crawl = children[ch];
+                
+                if(crawl.isEnd == true)
+                    prev = i+1;
+            }
+            
+            else
+                break;
+        }
+        
+        if(crawl.isEnd == false)
+            result.Substring(0,prev);
+        
+        if(result.Length == word.Length)
+        {
+            return true;
+        }
+        
+        else
+        {
+            return false;
+        }
+    }
+}
+
+// Your Trie object will be instantiated and called as such:
+// Trie trie = new Trie();
+// trie.Insert("somestring");
+// trie.Search("key");
